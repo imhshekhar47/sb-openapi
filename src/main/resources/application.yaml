@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+
+api:
+  base-path: /api
+
+spring:
+  application:
+    name: User management APIs
+  datasource:
+    url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:61901}/${DB_NAME:xe}
+    #url: jdbc:oracle:thin:localhost:61901:xe
+    username: ${DB_USERNAME:SYSTEM}
+    password: ${DB_PASSWORD:oracle}
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        hbm2ddl:
+          auto: update
+        dialect: org.hibernate.dialect.Oracle10gDialect
+    show-sql: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+logging:
+  level:
+    root: info

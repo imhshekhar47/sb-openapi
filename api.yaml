@@ -1,0 +1,415 @@
+openapi: 3.0.1
+
+info:
+  title: User Management APIs
+  description: APIs to manage user roles
+  version: v1
+
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+
+security:
+  - bearerAuth: []
+
+paths:
+  /permission:
+    get:
+      operationId: listPermission
+      summary: List of permissions
+      description: Get list of all permissions
+      tags:
+        - permission
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            example: 1
+            default: 0
+          description: page offset
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            example: 1
+            default: 1
+          description: limit no of records
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PermissionRef'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      operationId: createPermission
+      summary: Create new permission
+      description: Create a ne permission
+      tags:
+        - permission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionCreate'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /permission/{id}:
+    get:
+      operationId: retrievePermission
+      summary: Retrieve Permission by Id
+      description: Retrieve Permission by Id
+      tags:
+        - permission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Permission Id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    patch:
+      operationId: patchPermission
+      summary: Patch permission
+      description: Patch permission
+      tags:
+        - permission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionUpdate'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionRef'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /role:
+    get:
+      operationId: listRole
+      summary: List of roles
+      description: Get list of all roles
+      tags:
+        - role
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            example: 1
+            default: 0
+          description: page offset
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            example: 1
+            default: 1
+          description: limit no of records
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleRef'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      operationId: createRole
+      summary: Create new role
+      description: Create new role
+      tags:
+        - role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreate'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /role/{id}:
+    get:
+      operationId: retrieveRole
+      summary: Retrieve Role by Id
+      description: Retrieve Role by Id
+      tags:
+        - role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Role Id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    UnAuthorizedError:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    ForbiddenError:
+      description: Forbidden error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+
+    PermissionRef:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the permission
+
+    Permission:
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the permission, should not have empty space
+          example: scope_customer:read, scope_customer:write
+        description:
+          type: string
+          description: Description of the permission
+
+    PermissionCreate:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          description: Name of the permission, should not have empty space
+          example: scope_customer:read, scope_customer:write
+        description:
+          type: string
+          description: Description of the permission
+
+    PermissionUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the permission, should not have empty space
+          example: scope_customer:read, scope_customer:write
+        description:
+          type: string
+          description: Description of the permission
+
+    RoleRef:
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the role, it should not have empty space
+          example: ADMIN
+        href:
+          type: string
+          description: Resource url
+
+    Role:
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the role, it should not have empty space
+          example: ADMIN
+        description:
+          type: string
+          description: Description of the role
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleRef'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionRef'
+
+    RoleCreate:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          description: Name of the role, it should not have empty space
+          example: ADMIN
+        description:
+          type: string
+          description: Description of the role
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleRef'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionRef'
+
+    RoleUpdate:
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        code:
+          type: string
+          description: Name of the role, it should not have empty space
+          example: ADMIN
+        description:
+          type: string
+          description: Description of the role
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleRef'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionRef'
