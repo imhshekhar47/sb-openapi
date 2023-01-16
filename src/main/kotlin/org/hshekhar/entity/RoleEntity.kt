@@ -22,8 +22,6 @@ import javax.persistence.*
 @Table(name = "role")
 data class RoleEntity(
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     var id: String? = null,
 
     @Column(nullable = false, unique = true)
@@ -111,7 +109,7 @@ class RoleRepoService(
     fun save(model: Role): Role {
         return handleException {
             LOGGER.debug("entry: save(model=$model)")
-            val role = mapper.map(model)
+            val role = mapper.map(model).copy(id = model.code.lowercase())
             val saved = repository.save(role)
             LOGGER.debug("exit: save()")
 

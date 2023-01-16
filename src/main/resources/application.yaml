@@ -4,13 +4,13 @@ server:
 
 api:
   base-path: /api
+  allowed-origins: "https://localhost:4200"
 
 spring:
   application:
     name: User management APIs
   datasource:
     url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:61901}/${DB_NAME:xe}
-    #url: jdbc:oracle:thin:localhost:61901:xe
     username: ${DB_USERNAME:SYSTEM}
     password: ${DB_PASSWORD:oracle}
   jpa:
@@ -26,7 +26,15 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://login.microsoftonline.com/<azure-tenant-id>/v2.0
+          audiences: <api-audience-id> # example api://<api-audience-id>/<api-scope>
 
 logging:
   level:
     root: info
+    org.springframework.security: debug
+

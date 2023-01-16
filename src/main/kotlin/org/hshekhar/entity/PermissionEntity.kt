@@ -20,11 +20,9 @@ import javax.persistence.*
  **/
 
 @Entity
-@Table(name = "permissions")
+@Table(name = "permission")
 data class PermissionEntity(
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     var id: String? = null,
 
     @Column(nullable = false, unique = true)
@@ -94,13 +92,13 @@ class PermissionRepoService(
     fun save(model: Permission): Permission {
         return handleException {
             LOGGER.debug("entry: save(model=$model)")
-            val saved = repository.save(mapper.map(model))
+            val saved = repository.save(mapper.map(model).copy(id = model.code.lowercase()))
             LOGGER.debug("exit: save()")
             mapper.map(saved)
         }
     }
 
-    fun patchById(id: String, model: PermissionUpdate): PermissionRef {
+    fun patchById(id: String, model: PermissionUpdate): PermissionRef? {
         val existing = findById(id) ?: throw NotFoundException()
 
         val modified = with(existing) {
@@ -133,7 +131,7 @@ class PermissionRepoService(
                 ),
                 Permission(
                     id = "",
-                    code = "admin:edit",
+                    code = "admin:write",
                     description = "can edit admin"
                 ),
                 Permission(

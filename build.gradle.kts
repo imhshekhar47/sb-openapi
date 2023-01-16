@@ -51,6 +51,10 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 
+    // spring security resource server
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(kotlin("test"))
 }
