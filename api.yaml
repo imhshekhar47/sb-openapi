@@ -230,6 +230,35 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /access:
+    get:
+      operationId: getAccessDetails
+      summary: Get access details
+      description: Get the access details
+      tags:
+        - access
+      parameters:
+        - name: roles
+          in: query
+          required: true
+          schema:
+            type: string
+            example: role_admin,role_user
+          description: Roles as csv
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDetails'
+        '401':
+          $ref: '#/components/responses/UnAuthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -260,6 +289,29 @@ components:
             $ref: '#/components/schemas/ApiError'
 
   schemas:
+    AccessMapping:
+      type: object
+      description: Mapping of roles to access
+      properties:
+        role:
+          type: string
+          description: Role code
+          example: role_user
+        permissions:
+          type: array
+          description: Permissions against the role
+          example: customer:read
+          items:
+            type: string
+    AccessDetails:
+      type: object
+      description: Access details
+      properties:
+        details:
+          type: array
+          description: List of role and respective permission mapping
+          items:
+            $ref: '#/components/schemas/AccessMapping'
     ApiError:
       type: object
       properties:

@@ -1,10 +1,10 @@
 package org.hshekhar.entity
 
-import org.hibernate.annotations.GenericGenerator
 import org.hshekhar.model.Role
 import org.hshekhar.model.RoleRef
 import org.mapstruct.*
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -98,6 +98,7 @@ class RoleRepoService(
         return items
     }
 
+    @Cacheable(cacheNames = ["role"], key = "#id")
     fun findById(id: String): Role? {
         LOGGER.debug("entry: findById(id=$id)")
         val item = repository.findByIdOrNull(id)?.let { mapper.map(it) }

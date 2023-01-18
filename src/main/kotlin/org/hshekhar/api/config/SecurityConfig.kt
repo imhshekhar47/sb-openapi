@@ -15,8 +15,6 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.util.*
-import java.util.stream.Collectors
 
 /**
  * @created 1/9/2023'T'3:12 PM
@@ -27,17 +25,24 @@ class CustomRoleConverter : Converter<Jwt?, MutableCollection<GrantedAuthority?>
 
     override fun convert(jwt: Jwt): MutableCollection<GrantedAuthority?> {
         val listOrAuthorities: MutableCollection<GrantedAuthority?> = mutableListOf()
-
+        val rolesAndPermissions = mutableSetOf<String>()
         jwt.claims["groups"]?.let {
             val groups = it as List<*>
             // TODO: check groups and add respective roles
-            groups.forEach { group ->
-                listOrAuthorities.add(SimpleGrantedAuthority(group.toString().uppercase()))
-            }
+            groups
+                .map { group -> group.toString().uppercase() }
+                .forEach { group ->
+                    rolesAndPermissions.add("ROLE_$group")
+                    // TODO: fetch all child roles
+                    // TODO: fetch all permissions
+                }
         }
 
+
         // adding default role
-        listOrAuthorities.add(SimpleGrantedAuthority("ROLE_USER"))
+        rolesAndPermissions.forEach {
+            listOrAuthorities.add(SimpleGrantedAuthority(it))
+        }
         return listOrAuthorities
     }
 }
